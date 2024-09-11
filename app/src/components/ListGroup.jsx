@@ -1,45 +1,36 @@
-
+import React, { useState } from 'react';
 
 const ListGroup = () => {
 
-    const fillDummyData = () => {
-        let dummyData = [];
-        for (let i = 1; i < 11; i++) {
-            dummyData.push({
-                user_id: `id${i}`,
-                user_name: `name${i}`,
-            })
+    
+    
+    const fillDummyData = () =>{
+        let arr = [];
+        for(let i = 0; i < 20; i++)
+        {
+            arr.push(`item ${i}`);
         }
-        return dummyData;
+        return arr;
     }
 
 
+    const [selected, setSelected] = useState("");
+    const handlClick = (item) =>{
+        setSelected(item);
+    }
     return (
         <>
-            <table className="table table-dark">
-                <thead>
-                    <th>USER ID</th>
-                    <th>USER NAME</th>
-                </thead>
-                <tbody>
-                    {
-                        fillDummyData().map((dummy, index) => {
-                            return (
-                                <>
-                                    <tr key={index}>
-                                        <td>
-                                            {dummy.user_id}
-                                        </td>
-                                        <td>
-                                            {dummy.user_name}
-                                        </td>
-                                    </tr>
-                                </>
-                            );
-                        })
-                    }
-                </tbody>
-            </table>
+            <ul className="list-group">
+                {
+                    fillDummyData().map((item, index)=>{
+                        return(
+                            <li key={index} 
+                            className={(selected === item)? "list-group-item active" : "list-group-item"} 
+                            onClick={()=>handlClick(item)}>{item}</li>
+                        )
+                    })
+                }
+            </ul>
         </>
     )
 }
