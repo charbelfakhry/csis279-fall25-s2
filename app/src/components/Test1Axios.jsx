@@ -5,6 +5,14 @@ import React, { useEffect, useState } from 'react';
 const Test1Axios = () => {
     const [data, setData] = useState([]);
 
+
+    const [formData,setFormData] = useState({
+        id: '',
+        userId: '',
+        title: '',
+        body: ''
+    });
+
     useEffect(() => {
         getTypiData();
     }, []);
@@ -20,6 +28,27 @@ const Test1Axios = () => {
         } catch (e) {
             alert(`Error fetching information ${e}`);
         }
+    }
+
+    const addItem = () => {
+        
+        const item = {
+            id: formData.id,
+            userId: formData.userId,
+            title: formData.title,
+            body: formData.body
+        }
+        setData(prevData => [...prevData, item]);
+
+    }
+
+    const handleChange = (event) =>{
+        const {name, value} = event.target;
+        
+        setFormData(prevData => ({
+            ...prevData,
+            [name]: value
+        }));
     }
 
     return (
@@ -47,6 +76,27 @@ const Test1Axios = () => {
                     }
                 </tbody>
             </table>
+            <div className='row'>
+                <div className='col'>
+                    <label style={{fontWeight: 'bold'}}>id: </label>
+                    <input type='text' name='id' onChange={handleChange} />
+                </div>
+                <div className='col'>
+                    <label style={{fontWeight: 'bold'}}>UserId: </label>
+                    <input type='text' name='userId' onChange={handleChange} />
+                </div>
+                <div className='col'>
+                    <label style={{fontWeight: 'bold'}}>Title: </label>
+                    <input type='text' name='title' onChange={handleChange} />
+                </div>
+                <div className='col'>
+                    <label style={{fontWeight: 'bold'}}>body: </label>
+                    <input type='text' name='body' onChange={handleChange} />
+                </div>
+                <div className='col'>
+                    <button className='btn btn-success' onClick={()=>addItem()}>Add Item</button>
+                </div>
+            </div>
         </>
     );
 
