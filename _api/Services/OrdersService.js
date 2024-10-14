@@ -1,6 +1,6 @@
 // CRUD services for the orders table
 
-const db = require('./database');
+const db = require('../Database/db');
 
 // Create a new order and inject it into the database
 // Here, we assume order_id generation is automated

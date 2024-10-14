@@ -1,6 +1,6 @@
 // CRUD services for the Cart_items table
 
-const db = require('./database');
+const db = require('../Database/db');
 
 // Create a new cart item and inject it into the database
 // Here, we assume Cart_item_id generation is automated

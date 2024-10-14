@@ -1,6 +1,6 @@
 // CRUD services for the reviews table
 
-const db = require('./database');
+const db = require('../Database/db');
 
 // Create a new review and inject it into the database
 // Here, we assume that review_id generation is automated

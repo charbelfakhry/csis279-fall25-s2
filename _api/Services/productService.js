@@ -1,4 +1,4 @@
-const db = require('../db');
+const db = require('../Database/db');
 
 // Utility function to validate product input
 const validateProduct = (product) => {

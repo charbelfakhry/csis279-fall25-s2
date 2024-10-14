@@ -1,4 +1,4 @@
-const db = require('../db'); // Import the database connection
+const db = require('../Database/db');
 
 /**
  * Validates the category input.

@@ -1,6 +1,6 @@
 // CRUD services for the Order_items table
 
-const db = require('./database');
+const db = require('../Database/db');
 
 // Create a new order item
 // Here, we assume that order_items_id generation is automated

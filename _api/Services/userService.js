@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const db = require('../db');
+const db = require('../Database/db');
 
 // Utility function to validate user input
 const validateUser = (user) => {

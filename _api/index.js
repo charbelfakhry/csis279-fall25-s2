@@ -1,32 +1,21 @@
 const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const dotenv = require("dotenv");
-const userRoutes = require('./Routes/userRoutes');
+const session = require('express-session');
+require("dotenv").config();
 
-dotenv.config();
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const port = process.env.PORT || 3001;
 
 const app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use("/api/users", userRoutes);
+const users = require('./Routes/userRoutes');
+app.use('/api/users', users);
 
-app.get("/", (req, res) => {
-  res.send("api running yay");
-});
+app.listen(port, () => {
+    console.log(`my app is listening ${port}`);
 
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send("Something broke!");
-});
-
-const PORT = process.env.PORT || 4000;
-
-app.listen(PORT, () => {
-  console.log(`====================================`);
-  console.log(`Server running on port ${PORT}`);
-  console.log(`====================================`);
-});
+})
