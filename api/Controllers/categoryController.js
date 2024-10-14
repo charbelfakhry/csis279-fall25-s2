@@ -1,78 +1,78 @@
-const {
-  getCategories,
-  getCategoryById,
-  createCategory,
-  updateCategory,
-  deleteCategory,
-} = require('../services/categoryService');
+const categoryService = require("../Services/CategoriesService");
 
-
-const getCategoriesController = async(req, res) => {
-    try{
-        const categories = await getCategories();
-        res.status(200).json({categories});
-    }catch(error) {
-        res.status(500).json({message:error?.message});
-    }
-}
-
-const getCategoryByIdController = async(req, res) => {
+const categoryController = {
+  createCategory: async (req, res) => {
     try {
-        const { category_id }= req.body;
-        const category = await getCategoryById(category_id);
+      const { name } = req.body;
 
-        if (category) {
-        res.status(200).json({ category });
-      } else {
-        res.status(404).json({ message: 'Category not found' });
+      if (!name) {
+        return res.status(400).json({ message: "Category name is required" });
       }
-    }catch(error) {
-        res.status(500).json({message:error?.message});
-    }
-}
 
-const createCategoryController = async(req, res) => {
-    try{
-        const { category_name } = req.body;
-        const newCategory = await createCategory(category_name);
-        res.status(200).json({category: newCategory});
-    }catch(error) {
-        res.status(500).json({message:error?.message});
+      const category = await categoryService.createCategory(name);
+      res.status(201).json(category);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
-}
+  },
 
-const updateCategoryController = async(req, res) => {
-    try{
-        const { category_id } = req.params;
-        const { category_name } = req.body;
-        const updatedCategory = await updateCategory(category_id, category_name);
-        res.status(200).json({updatedCategory});
-    }catch(error) {
-        res.status(500).json({message:error?.message});
+  getAllCategories: async (req, res) => {
+    try {
+      const categories = await categoryService.getAllCategories();
+      res.status(200).json(categories);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
-}
+  },
 
-const deleteCategoryController = async(req, res) => {
-    try{
-        const { category_id } = req.params;
-        const deleted = await deleteCategory(category_id);
-  
-      if (deleted) {
-        res.status(200).json({ message: 'Category deleted successfully' });
-      } else {
-        res.status(404).json({ message: 'Category not found' });
+  getCategoryById: async (req, res) => {
+    try {
+      const { categoryId } = req.params;
+      const category = await categoryService.getCategoryById(categoryId);
+      if (!category) {
+        return res.status(404).json({ message: "Category not found" });
       }
-    
-    }catch(error) {
-        res.status(500).json({message:error?.message});
+      res.status(200).json(category);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
-}
+  },
 
+  updateCategory: async (req, res) => {
+    try {
+      const { categoryId } = req.params;
+      const { name } = req.body;
 
-module.exports = {
-    getCategoriesController,
-    getCategoryByIdController,
-    createCategoryController,
-    updateCategoryController,
-    deleteCategoryController,
-}; 
+      const [updatedCount] = await categoryService.updateCategory(
+        categoryId,
+        name
+      );
+
+      if (updatedCount === 0) {
+        return res
+          .status(404)
+          .json({ message: "Category not found or no update needed" });
+      }
+      res.status(200).json({ message: "Category updated successfully" });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
+  deleteCategory: async (req, res) => {
+    try {
+      const { categoryId } = req.params;
+      const deleted = await categoryService.deleteCategory(categoryId);
+
+      if (!deleted) {
+        return res.status(404).json({ message: "Category not found" });
+      }
+
+      res.status(200).json({ message: "Category deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+};
+
+module.exports = categoryController;

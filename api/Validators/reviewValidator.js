@@ -1,11 +1,20 @@
 const { check } = require('express-validator');
-const validate = require('./validatorValidators');
 
-const reviewValidationRules = [
-    check('userId').notEmpty().withMessage('User ID is required'),
-    check('productId').notEmpty().withMessage('Product ID is required'),
-    check('rating').isInt({ min: 1, max: 5 }).withMessage('Rating must be between 1 and 5'),
-    check('comment').notEmpty().withMessage('Comment is required')
+const insertReviewValidation = [
+  check('review_body')
+    .notEmpty().withMessage('Review body is required')
+    .isLength({ min: 10 }).withMessage('Review must be at least 10 characters long'),
 ];
 
-module.exports = { reviewValidationRules, validate };
+const updateReviewValidation = [
+  check('review_id')
+    .notEmpty().withMessage('Review ID is required')
+    .isMongoId().withMessage('Invalid Review ID format'), 
+  check('review_body')
+    .optional()
+    .isLength({ min: 10 }).withMessage('Review must be at least 10 characters long'),];
+
+module.exports = {
+  insertReviewValidation,
+  updateReviewValidation,
+};

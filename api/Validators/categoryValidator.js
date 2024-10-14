@@ -1,8 +1,12 @@
 const { check } = require('express-validator');
-const validate = require('./validatorValidators');
 
-const categoryValidationRules = [
-    check('name').notEmpty().withMessage('Category name is required')
-];
+const CategoryValidation = [
+    check('category_name').notEmpty().withMessage('Category Name is required'),
+]
 
-module.exports = { categoryValidationRules, validate };
+const updateCategoryValidation = [
+    check('category_name').notEmpty().withMessage('Category Name is required'),
+]
+module.exports={ CategoryValidation,
+updateCategoryValidation
+}

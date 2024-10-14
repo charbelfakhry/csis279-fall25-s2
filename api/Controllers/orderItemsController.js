@@ -1,92 +1,93 @@
-const {
-    createOrderItem,
-    getAllOrderItems,
-    getOrderItemsByOrderId,
-    updateOrderItem,
-    deleteOrderItem
-} = require('../Services/OrderItemsService');
+const orderItemService = require("../Services/OrderItemService");
 
-// Get all order items
-const getAllOrderItemsController = async (req, res) => {
+const orderItemController = {
+  createOrderItem: async (req, res) => {
     try {
-        const orderItems = await getAllOrderItems();
-        res.status(200).json({ orderItems });
-    } catch (error) {
-        res.status(500).json({ message: error?.message });
-    }
-};
+      const { userId, productId } = req.body;
 
-// Get order items by order ID
-const getOrderItemsByOrderIdController = async (req, res) => {
+      if (!userId || !productId) {
+        return res
+          .status(400)
+          .json({ message: "User ID, Product ID are required" });
+      }
+
+      const orderItem = await orderItemService.createOrderItem(
+        userId,
+        productId
+      );
+      res.status(201).json(orderItem);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
+  getAllItemsByOrderId: async (req, res) => {
     try {
-        const { order_id } = req.params; // Extract order_id from the URL parameters
-        const orderItems = await getOrderItemsByOrderId(order_id);
+      const { orderId } = req.params;
+      const orderItems = await orderItemService.getAllItemsByOrderId(orderId);
 
-        if (orderItems.length) {
-            res.status(200).json({ orderItems });
-        } else {
-            res.status(404).json({ message: 'No order items found for this order' });
-        }
+      if (orderItems.length === 0) {
+        return res
+          .status(404)
+          .json({ message: "No items found for this order" });
+      }
+
+      res.status(200).json(orderItems);
     } catch (error) {
-        res.status(500).json({ message: error?.message });
+      res.status(500).json({ message: error.message });
     }
-};
+  },
 
-// Create a new order item
-const createOrderItemController = async (req, res) => {
+  getOrderItemById: async (req, res) => {
+    
     try {
-        const { order_id, product_id, quantity, price_at_purchase } = req.body; // Extract data from request body
-        const newOrderItem = await createOrderItem(order_id, product_id, quantity, price_at_purchase);
-
-        if (newOrderItem) {
-            res.status(201).json({ message: 'Order item created successfully' });
-        } else {
-            res.status(400).json({ message: 'Failed to create order item' });
-        }
+      const { orderItemId } = req.params;
+      const orderItem = await orderItemService.getOrderItemById(orderItemId);
+      if (!orderItem) {
+        return res.status(404).json({ message: "Order item not found" });
+      }
+      res.status(200).json(orderItem);
     } catch (error) {
-        res.status(500).json({ message: error?.message });
+      res.status(500).json({ message: error.message });
     }
-};
+  },
 
-// Update an existing order item
-const updateOrderItemController = async (req, res) => {
+  updateOrderItem: async (req, res) => {
     try {
-        const { order_item_id } = req.params; // Extract order_item_id from URL parameters
-        const { quantity } = req.body; // Extract updated quantity from request body
+      const { orderItemId } = req.params;
+      const { quantity, price } = req.body;
 
-        const updatedOrderItem = await updateOrderItem(order_item_id, quantity);
+      const [updatedCount] = await orderItemService.updateOrderItem(
+        orderItemId,
+        quantity,
+        price
+      );
 
-        if (updatedOrderItem) {
-            res.status(200).json({ message: 'Order item updated successfully' });
-        } else {
-            res.status(404).json({ message: 'Order item not found' });
-        }
+      if (updatedCount === 0) {
+        return res
+          .status(404)
+          .json({ message: "Order item not found or no update needed" });
+      }
+      res.status(200).json({ message: "Order item updated successfully" });
     } catch (error) {
-        res.status(500).json({ message: error?.message });
+      res.status(500).json({ message: error.message });
     }
-};
+  },
 
-// Delete an order item
-const deleteOrderItemController = async (req, res) => {
+  deleteOrderItem: async (req, res) => {
     try {
-        const { order_item_id } = req.params; // Extract order_item_id from URL parameters
+      const { orderItemId } = req.params;
+      const deleted = await orderItemService.deleteOrderItem(orderItemId);
 
-        const deleted = await deleteOrderItem(order_item_id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Order item not found" });
+      }
 
-        if (deleted) {
-            res.status(200).json({ message: 'Order item deleted successfully' });
-        } else {
-            res.status(404).json({ message: 'Order item not found' });
-        }
+      res.status(200).json({ message: "Order item deleted successfully" });
     } catch (error) {
-        res.status(500).json({ message: error?.message });
+      res.status(500).json({ message: error.message });
     }
+  },
 };
 
-module.exports = {
-    getAllOrderItemsController,
-    getOrderItemsByOrderIdController,
-    createOrderItemController,
-    updateOrderItemController,
-    deleteOrderItemController,
-};
+module.exports = orderItemController;

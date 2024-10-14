@@ -1,90 +1,100 @@
-const bcrypt = require('bcrypt');
-const db = require('../db');
+const User = require("../Models/User");
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
 
-// Utility function to validate user input
-const validateUser = (user) => {
-  const errors = [];
-  if (!user.username || user.username.length < 3 || user.username.length > 30) {
-    errors.push('Username must be between 3 and 30 characters long.');
-  }
-  if (!user.user_email || !/\S+@\S+\.\S+/.test(user.user_email)) {
-    errors.push('Invalid email format.');
-  }
-  if (!user.user_password || user.user_password.length < 6) {
-    errors.push('Password must be at least 6 characters long.');
-  }
-  return errors;
+const createUser = async (username, email, password, phone) => {
+    try {
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        const newUser = await User.create({
+
+            user_username: username,
+            user_email: email,
+            user_pass: hashedPassword,
+            user_phone: phone,
+            joined_on: new Date(),
+        });
+
+        return newUser;
+    } catch (error) {
+        console.error('Error creating user:', error);
+        throw new Error('Failed to create user');
+    }
 };
 
-// Service to fetch all users
-const getAllUsersService = async () => {
-  try {
-    const result = await db.query(
-      'SELECT user_id, username, user_email, user_address, user_phone_number, created_at FROM users ORDER BY user_id ASC'
-    );
-    return result.rows;
-  } catch (error) {
-    console.error('Error fetching all users:', error);
-    throw new Error('Error fetching users');
-  }
+const getAllUsers = async () => {
+    try {
+        const users = await User.findAll();
+        return users;
+    } catch (error) {
+        console.error('Error retrieving users:', error);
+        throw new Error('Failed to retrieve users');
+    }
 };
 
-// Service to fetch a user by ID
-const getUserByIdService = async (user_id) => {
-  try {
-    const result = await db.query('SELECT * FROM users WHERE user_id = $1', [parseInt(user_id)]);
-    return result.rows[0];
-  } catch (error) {
-    console.error(`Error fetching user with ID ${user_id}:`, error);
-    throw new Error('Error fetching user');
-  }
+const getUserById = async (id) => {
+    try {
+        const user = await User.findByPk(id);
+        if (user) {
+            return user.toJSON();
+        }
+        return "User not found";
+    } catch (error) {
+        console.error('Error retrieving user by ID:', error);
+        throw new Error('Failed to retrieve user');
+    }
 };
 
-// Service to create a new user
-const createUserService = async (user) => {
-  try {
-    const hashedPassword = await bcrypt.hash(user.user_password, 10); // Hash the password
-    const result = await db.query(
-      'INSERT INTO users (username, user_email, user_password, user_address, user_phone_number) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [user.username, user.user_email, hashedPassword, user.user_address, user.user_phone_number]
-    );
-    return result.rows[0];
-  } catch (error) {
-    console.error('Error creating user:', error);
-    throw new Error('Error creating user');
-  }
+const getUserByEmail = async (user_email) => {
+    try {
+        const user = await User.findOne({ where: { user_email: user_email } });
+
+
+        return user || null;
+    } catch (err) {
+        throw new Error(`Error in finding the user with the email ${user_email}`);
+    }
+};
+const updateUser = async (id, username, email, password, phone) => {
+    try {
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        const updated = await User.update({
+            user_username: username,
+            user_email: email,
+            user_pass: hashedPassword,
+            user_phone: phone,
+        }, {
+            where: { user_id: id }
+        });
+
+        return updated;
+    } catch (error) {
+        console.error('Error updating user:', error);
+        throw new Error('Failed to update user');
+    }
 };
 
-// Service to update a user
-const updateUserService = async (user_id, user) => {
-  try {
-    const result = await db.query(
-      'UPDATE users SET username = $1, user_email = $2, user_address = $3, user_phone_number = $4 WHERE user_id = $5 RETURNING *',
-      [user.username, user.user_email, user.user_address, user.user_phone_number, parseInt(user_id)]
-    );
-    return result.rows[0];
-  } catch (error) {
-    console.error(`Error updating user with ID ${user_id}:`, error);
-    throw new Error('Error updating user');
-  }
-};
-
-// Service to delete a user
-const deleteUserService = async (user_id) => {
-  try {
-    const result = await db.query('DELETE FROM users WHERE user_id = $1 RETURNING *', [parseInt(user_id)]);
-    return result.rowCount > 0; // Return true if a user was deleted, false otherwise
-  } catch (error) {
-    console.error(`Error deleting user with ID ${user_id}:`, error);
-    throw new Error('Error deleting user');
-  }
+const deleteUser = async (id) => {
+    try {
+        const user = await User.findByPk(id);
+        if (!user) {
+           throw new Error(`User with the id ${id} is not found`); 
+        }
+        const deletedUser = await user.destroy();
+        return deletedUser;
+       
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        throw new Error('Failed to delete user');
+    }
 };
 
 module.exports = {
-  validateUser,
-  getAllUsersService,
-  getUserByIdService,
-  createUserService,
-  updateUserService,
-  deleteUserService,
+    createUser,
+    getAllUsers,
+    getUserById,
+    updateUser,
+    deleteUser,
+    getUserByEmail
 };
