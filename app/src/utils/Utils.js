@@ -1,11 +1,12 @@
 
 const getToken = () => {
-    const parsedUser = JSON.parse(localStorage.getItem("user"));
-    return parsedUser.token;
+    const token = JSON.parse(localStorage.getItem("token"));
+    return token;
   };
 
 const getTokenBearer = () => {
   const token = getToken();
+  console.log(token);
   return `Bearer ${token}`;
 }
 

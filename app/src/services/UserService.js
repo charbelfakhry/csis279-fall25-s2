@@ -1,7 +1,5 @@
-
-import http from "../http-common";
+import http from  "../http-common";
 import { getToken, getTokenBearer } from "../utils/Utils";
-
 
 
 const getAll = () => {
@@ -14,7 +12,7 @@ const getAll = () => {
 
 const get = (id) =>{
     return http.get(`/users/user/${id}`, {
-        headers:{
+        headers: {
             Authorization: getTokenBearer()
         }
     });
@@ -35,7 +33,7 @@ const remove = (id) =>{
 }
 
 const authenticate = (user) => {
-    return http.post(`/users/authenticateUser`, user);
+    return http.post(`/users/auth/login`, user);
 }
 
 const loadRefernceTableInfo = (data) =>

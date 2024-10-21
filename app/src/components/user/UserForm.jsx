@@ -1,13 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import UserService from "../../services/UserService";
-import { useLocation } from 'react-router-dom';
-import {useHistory} from "react-router-dom";
+import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-
-
-
-const UserForm = (user) =>{
+const UserForm = (user) => {
     const [id, setId] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -16,47 +12,42 @@ const UserForm = (user) =>{
     const [countries, setCountries] = useState([]);
     const [cities, setCities] = useState([]);
 
-    const [country, setCountry] = ("");
-    const [city, setCity] = ("");
+    const [country, setCountry] = useState("");
+    const [city, setCity] = useState("");
 
     const location = useLocation();
-    const history = useHistory();
+    const navigate = useNavigate(); // Replaced useHistory with useNavigate
 
-    useEffect(()=>{
-        // getCountries();
-        // getCities();
+    useEffect(() => {
         const person = location.state?.user;
-        if(person){
+        if (person) {
             assignPerson(person);
         }
-    }, []);
+    }, [location]);
 
-    const assignPerson = (person) =>{
+    const assignPerson = (person) => {
         setId(person?.id);
         setFirstName(person?.firstName);
         setLastName(person?.lastName);
         setEmail(person?.email);
         setPhone(person?.phone);
-    } 
+    };
 
-    const handleSubmit = async (event) =>{
+    const handleSubmit = async (event) => {
         event.preventDefault();
         let result;
-        try{
-            if(id){
-                result = await UserService.update({user: {id, firstName, lastName, email, phone}});
-            }else{
-                result = await UserService.create({user:{firstName, lastName, email, phone}});
+        try {
+            if (id) {
+                result = await UserService.update({ user: { id, firstName, lastName, email, phone } });
+            } else {
+                result = await UserService.create({ user: { firstName, lastName, email, phone } });
             }
             toast.success(result?.data?.message);
-            history.push({
-                pathname: `/users`,
-            });
-
-        }catch(error){
+            navigate('/users'); // Replaced history.push with navigate
+        } catch (error) {
             toast.error("Error saving person");
         }
-    }
+    };
 
     const handleReset = () => {
         setId('');
@@ -64,48 +55,46 @@ const UserForm = (user) =>{
         setLastName('');
         setEmail('');
         setPhone('');
-    }
+    };
 
-    const getCountries = async() => {
-        try{
+    const getCountries = async () => {
+        try {
             let data = {
                 tableName: "ref_country",
                 value: "country_id",
                 label: "country_name",
-            }
+            };
             const countries = await UserService.loadRefernceTableInfo(data);
             setCountries(countries.data);
-        }catch(err){
+        } catch (err) {
             console.log(err);
-            toast.error("error fetching countries.");
+            toast.error("Error fetching countries.");
         }
-    }
+    };
 
-    const getCities = async() => {
-        try{
+    const getCities = async () => {
+        try {
             let data = {
                 tableName: "ref_city",
                 value: "city_id",
                 label: "city_name",
-            }
-            const cities = UserService.loadRefernceTableInfo(data);
+            };
+            const cities = await UserService.loadRefernceTableInfo(data);
             setCities(cities.data);
-        }catch(error){
-            toast.error("Error getting cities.")
+        } catch (error) {
+            toast.error("Error getting cities.");
         }
-    }
+    };
 
-    const handleCityChange = (event) =>{
-        // implement handle city
-        setCity(event.taget.value);
-    }
-
-    const handleCountryChange = (event) =>{
-        // implement handle country
+    const handleCityChange = (event) => {
         setCity(event.target.value);
-    }
+    };
 
-    return(
+    const handleCountryChange = (event) => {
+        setCountry(event.target.value);
+    };
+
+    return (
         <div className='container w-75'>
             <h2>User Form</h2>
             <form>
@@ -140,9 +129,9 @@ const UserForm = (user) =>{
                     </div>
                 </div>
                 <div className='form-group row p-4'>
-                    <label htmlFor='country' className='col-sm-2 col-form-label'>Cities</label>
+                    <label htmlFor='city' className='col-sm-2 col-form-label'>Cities</label>
                     <div className="col-sm-10">
-                        {/* <CustDropdown options={city} onSelectedItem={handleCityChange}/> */}
+                        {/* <CustDropdown options={cities} onSelectedItem={handleCityChange}/> */}
                     </div>
                 </div>
                 <div className='form-group p-4 row justify-content-center'>
@@ -156,5 +145,6 @@ const UserForm = (user) =>{
             </form>
         </div>
     );
-} 
+};
+
 export default UserForm;
