@@ -30,10 +30,10 @@ const UserPage = () => {
     }
 
     const handleConfirmDelete = () => {
+
         UserService.remove(selectedPersonId)
             .then((res) => {
                 toast.success(res?.data?.message, {
-                    position: toast.POSITION.TOP_CENTER,
                     autoClose: 2000,
                 });
                 loadUsers();
@@ -61,8 +61,7 @@ const UserPage = () => {
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>FirstName</th>
-                            <th>LastName</th>
+                            <th>Username</th>
                             <th>Email</th>
                             <th>Phone</th>
                             <th>Select</th>
@@ -74,13 +73,12 @@ const UserPage = () => {
                             persons.map((item, index) => {
                                 return (
                                     <tr key={index}>
-                                        <td>{item.id}</td>
+                                        <td>{item.user_id}</td>
                                         <td>{item.user_username}</td>
-                                        <td>{item.lastName}</td>
-                                        <td>{item.email}</td>
-                                        <td>{item.phone}</td>
+                                        <td>{item.user_email}</td>
+                                        <td>{item.user_phone}</td>
                                         <td><button className="btn btn-success btn-sm" onClick={(event) => selectClickHandler(event, item)}><AiFillEdit /></button></td>
-                                        <td><button className="btn btn-danger btn-sm" onClick={(event) => deleteClickHandler(event, item?.id)}><AiFillDelete /></button></td>
+                                        <td><button className="btn btn-danger btn-sm" onClick={(event) => deleteClickHandler(event, item?.user_id)}><AiFillDelete /></button></td>
                                     </tr>
                                 );
                             })

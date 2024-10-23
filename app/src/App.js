@@ -127,7 +127,10 @@ function App() {
               <Route path="/userForm" element={<UserForm />} />
             </>
           ) : (
+            <>
             <Route path="/" element={<Login onLogin={handleLogin} />} />
+            <Route path="/aboutus" element={<AboutUs />} />
+            </>
           )}
         </Routes>
         <ToastContainer />

@@ -55,14 +55,17 @@ const getUserByEmail = async (user_email) => {
         throw new Error(`Error in finding the user with the email ${user_email}`);
     }
 };
-const updateUser = async (id, username, email, password, phone) => {
+
+// update user from the controller is wrong
+// send it to the service
+const updateUser = async (id, username, email, phone) => {
     try {
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        //const hashedPassword = await bcrypt.hash(password, saltRounds);
 
         const updated = await User.update({
             user_username: username,
             user_email: email,
-            user_pass: hashedPassword,
+            //user_pass: hashedPassword,
             user_phone: phone,
         }, {
             where: { user_id: id }

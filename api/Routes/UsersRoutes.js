@@ -37,7 +37,7 @@ router.get("/users", authToken, getAllUsersController); // Tested
 // router.get("/user/search/username", searchUserByUsernameController);
 
 //POST ROUTES
-router.post("/user", createUserController, insertUserValidation); //Tested
+router.post("/user", authToken, createUserController, insertUserValidation); //Tested
 router.post("/auth/login", authenticateUserController); // Tested
 // router.post("/auth/refresh-token", refreshTokenController);
 // router.post("/user/reset-password", resetPasswordController);
