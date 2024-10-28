@@ -1,0 +1,47 @@
+.data-grid {
+    width: 100%;
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
+}
+
+.data-grid__search {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.data-grid__table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-grid__header-cell,
+.data-grid__cell {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.data-grid__header-cell {
+    cursor: pointer;
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.data-grid__header-cell:hover {
+    background-color: #e0e0e0;
+}
+
+.data-grid__pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+.data-grid__pagination button {
+    padding: 5px 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
