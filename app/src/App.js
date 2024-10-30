@@ -10,6 +10,7 @@ import { FiLogOut, FiEdit } from "react-icons/fi";
 import AboutUs from "./pages/AboutUs";
 import Login from "./components/Login";
 import UsersDataGrid from "./components/UsersDataGrid";
+import TypiDataGrid from "./components/TypiDataGrid";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -94,6 +95,11 @@ function App() {
                         Users Datagrid
                       </Link>
                     </li>
+                    <li className="nav-item">
+                      <Link to="/typir" className="nav-link text-light">
+                        Typi datagrid
+                      </Link>
+                    </li>
                     </>
                     
                   )}
@@ -135,6 +141,7 @@ function App() {
               {isAdmin() && <Route path="/users" element={<UserPage />} />}
               <Route path="/usersDataGrid" element={<UsersDataGrid />} />
               <Route path="/userForm" element={<UserForm />} />
+              <Route path="/typir" element={<TypiDataGrid />} />
             </>
           ) : (
             <>
