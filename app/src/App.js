@@ -11,6 +11,8 @@ import AboutUs from "./pages/AboutUs";
 import Login from "./components/Login";
 import UsersDataGrid from "./components/UsersDataGrid";
 import TypiDataGrid from "./components/TypiDataGrid";
+import Form from "./components/form/Form";
+import FormUser from "./components/UserForm";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -86,22 +88,29 @@ function App() {
                   {isAdmin() && (
                     <>
                       <li className="nav-item">
-                      <Link to="/users" className="nav-link text-light">
-                        Users
-                      </Link>
-                    </li>
-                    <li className="nav-item">
-                      <Link to="/usersDatagrid" className="nav-link text-light">
-                        Users Datagrid
-                      </Link>
-                    </li>
-                    <li className="nav-item">
-                      <Link to="/typir" className="nav-link text-light">
-                        Typi datagrid
-                      </Link>
-                    </li>
+                        <Link to="/users" className="nav-link text-light">
+                          Users
+                        </Link>
+                      </li>
+                      <li className="nav-item">
+                        <Link
+                          to="/usersDatagrid"
+                          className="nav-link text-light"
+                        >
+                          Users Datagrid
+                        </Link>
+                      </li>
+                      <li className="nav-item">
+                        <Link to="/typir" className="nav-link text-light">
+                          Typi datagrid
+                        </Link>
+                      </li>
+                      <li className="nav-item">
+                        <Link to="/FormUser" className="nav-link text-light">
+                          User Form
+                        </Link>
+                      </li>
                     </>
-                    
                   )}
                   <li className="nav-item dropdown">
                     <button
@@ -110,14 +119,18 @@ function App() {
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
                     >
-                      <FiEdit className="dropdown-icon" /> {/* Edit Profile Icon */}
+                      <FiEdit className="dropdown-icon" />{" "}
+                      {/* Edit Profile Icon */}
                     </button>
                     <ul
                       className="dropdown-menu dropdown-menu-end"
                       aria-labelledby="navbarDropdown"
                     >
                       <li>
-                        <button className="dropdown-item" onClick={handleLogout}>
+                        <button
+                          className="dropdown-item"
+                          onClick={handleLogout}
+                        >
                           <FiLogOut className="dropdown-item-icon" /> Logout
                         </button>
                       </li>
@@ -142,11 +155,13 @@ function App() {
               <Route path="/usersDataGrid" element={<UsersDataGrid />} />
               <Route path="/userForm" element={<UserForm />} />
               <Route path="/typir" element={<TypiDataGrid />} />
+              <Route path="/Form" element={<Form />} />
+              <Route path="/FormUser" element={<FormUser />} />
             </>
           ) : (
             <>
-            <Route path="/" element={<Login onLogin={handleLogin} />} />
-            <Route path="/aboutus" element={<AboutUs />} />
+              <Route path="/" element={<Login onLogin={handleLogin} />} />
+              <Route path="/aboutus" element={<AboutUs />} />
             </>
           )}
         </Routes>
